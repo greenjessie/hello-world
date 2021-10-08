@@ -1,0 +1,38 @@
+# !/bin/bash
+which python3.7
+if [ $? -eq 0 ];then
+	echo 'already has py3.7'
+	exit
+else
+	exho 'begin install py3.7'
+fi
+sudo apt update
+sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget libsqlite3-dev
+curl -O https://www.python.org/ftp/python/3.7.6/Python-3.7.6.tar.xz
+tar -xf Python-3.7.6.tar.xz
+cd Python-3.7.6
+./configure --enable-optimizations
+make -j8 build_all
+sudo make altinstall
+python3.7 --version
+which python3.7
+
+echo "=============begin to uninstall py3.5=================="
+sudo apt-get remove python3.5 # 卸载python3.5
+sudo apt-get remove --auto-remove python3.5 # 卸载python3.5及其依赖
+sudo apt-get purge python3.5 或 sudo apt-get purge --auto-remove python3.5 # 清除python3.5
+
+cd /usr/bin
+sudo rm -f python3.5*
+sudo rm -f python3
+sudo ln -s /usr/local/bin/python3.7 python3
+
+cat ~/.pip/pip.conf << EOF
+[global]
+index-url=https://bytedpypi.byted.org/simple/
+EOF
+
+# python3 -m pip install MODULE_NAME
+# virtualenv -p /usr/local/bin/python3.7 py37env
+# 启动virtualenv，可以将下面的命令放到 .zshrc/.bashrc 登陆之后自动切换
+# source ~/py37env/bin/activate
